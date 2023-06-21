@@ -32,14 +32,7 @@ def get_base_model(model_name, v100):
     return model
 
 
-def build_peft_model(model: str):
-    # see site-packages/peft/utils/other.py
-    if 'chatglm' in model.lower():
-        target_modules = TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING['chatglm']
-    elif 'baichuan' in model.lower():
-        target_modules = TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING['llama']
-    else:
-        target_modules = None
+def build_peft_model(model, target_modules):
     peft_config = LoraConfig(
         target_modules=target_modules,
         task_type=TaskType.CAUSAL_LM,
@@ -120,6 +113,17 @@ def save_tunable_parameters(model, path):
     torch.save(saved_params, path)
 
 
+def get_target_modules(model: str):
+    # see site-packages/peft/utils/other.py
+    if 'chatglm' in model.lower():
+        target_modules = TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING['chatglm']
+    elif 'baichuan' in model.lower():
+        target_modules = TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING['llama']
+    else:
+        target_modules = None
+    return target_modules
+
+
 def finetune(model_name, base_dir, v100: bool):
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         model_name, trust_remote_code=True)
@@ -135,7 +139,8 @@ def finetune(model_name, base_dir, v100: bool):
     inference_adgen(tokenizer, model, join(base_dir, "adgen/AdvertiseGen/dev.json"), 10)
     model.train()
 
-    model = build_peft_model(model)
+    target_modules = get_target_modules(model_name)
+    model = build_peft_model(model, target_modules=target_modules)
     peft_train(tokenizer, model, train_data, max_steps=train_num)
     save_tunable_parameters(model, join(base_dir, short_name, "model-lora.pt"))
     model.eval()
