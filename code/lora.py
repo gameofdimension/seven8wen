@@ -12,10 +12,9 @@ class CastOutputToFloat(nn.Sequential):
     def forward(self, x): return super().forward(x).to(torch.float32)
 
 
-def get_base_model(model_name):
-    # model = AutoModel.from_pretrained(model_name, load_in_8bit=True, trust_remote_code=True, device_map='auto')
+def get_base_model(model_name, v100=True):
     # need to set load_in_8bit=False in gpu v100
-    model = AutoModel.from_pretrained(model_name, load_in_8bit=False, trust_remote_code=True, device_map='auto')
+    model = AutoModel.from_pretrained(model_name, load_in_8bit=v100, trust_remote_code=True, device_map='auto')
     model.supports_gradient_checkpointing = True
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()

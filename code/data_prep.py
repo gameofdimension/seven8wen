@@ -139,7 +139,7 @@ def inference_adgen(tokenizer, model, data_path, num):
 def inference(tokenizer, model, formatter, instructions, num):
     random.shuffle(instructions)
     with torch.no_grad():
-        for idx, item in enumerate(instructions[num]):
+        for idx, item in enumerate(instructions[:num]):
             feature = formatter(item)
             input_text = feature["context"]
             input_ids = tokenizer.encode(input_text, return_tensors='pt')
