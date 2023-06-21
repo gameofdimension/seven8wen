@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import transformers
 from peft import get_peft_model, LoraConfig, TaskType
-from transformers import AutoModel, TrainingArguments
+from transformers import AutoModel, TrainingArguments, AutoModelForCausalLM
 from transformers import Trainer
 
 from data_prep import load_dataset, inference_alpaca, inference_adgen
@@ -17,7 +17,12 @@ class CastOutputToFloat(nn.Sequential):
 
 def get_base_model(model_name, v100):
     # need to set load_in_8bit=False in gpu v100
-    model = AutoModel.from_pretrained(model_name, load_in_8bit=not v100, trust_remote_code=True, device_map='auto')
+    if "baichuan-inc/baichuan-7B" == model_name:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name, load_in_8bit=not v100, trust_remote_code=True, device_map='auto')
+    else:
+        model = AutoModel.from_pretrained(
+            model_name, load_in_8bit=not v100, trust_remote_code=True, device_map='auto')
     model.supports_gradient_checkpointing = True
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()
