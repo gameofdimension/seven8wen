@@ -2,15 +2,25 @@
 
 ---
 
-### 中文 LLM (大语言模型) LoRA 微调。colab 免费 GPU 可运行 <a href="https://colab.research.google.com/github/mymusise/ChatGLM-Tuning/blob/master/examples/finetune.ipynb"><img alt="Build" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
+### 中文 LLM (大语言模型) LoRA 微调。colab 免费 GPU 可运行
 
 - [x] ChatGLM-6B
 - [x] baichuan-7B
 
 ### Demo
 
+根据提供的若干商品属性，生成一段广告词。 [示例代码]() <a href="https://colab.research.google.com/github/mymusise/ChatGLM-Tuning/blob/master/examples/finetune.ipynb"><img alt="Build" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
+
+#### 微调前输出
+
+![](./img/before.png)
+
+#### 微调后效果。样本数量 1500 个，训练了 30 多分钟，虽然用词较单调，但是比微调前还是强多了
+
+![](./img/after.png)
 
 ### 参考
+
 - https://github.com/mymusise/ChatGLM-Tuning
 - https://github.com/THUDM/ChatGLM-6B/blob/main/ptuning/README.md
 
