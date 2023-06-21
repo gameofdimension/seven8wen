@@ -9,7 +9,7 @@
 
 ### Demo
 
-根据提供的若干商品属性，生成一段广告词。 [示例代码]() <a href="https://colab.research.google.com/github/mymusise/ChatGLM-Tuning/blob/master/examples/finetune.ipynb"><img alt="Build" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
+根据提供的若干商品属性，生成一段广告词。 [示例代码](https://github.com/gameofdimension/seven8wen/blob/master/finetune.ipynb) <a href="https://github.com/gameofdimension/seven8wen/blob/master/finetune.ipynb"><img alt="Build" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
 #### 微调前输出
 
