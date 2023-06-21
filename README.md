@@ -2,7 +2,7 @@
 
 ---
 
-### 中文 LLM (大语言模型) LoRA 微调
+### 中文 LLM (大语言模型) LoRA 微调。colab 免费 GPU 可运行 <a href="https://colab.research.google.com/github/mymusise/ChatGLM-Tuning/blob/master/examples/finetune.ipynb"><img alt="Build" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
 - [x] ChatGLM-6B
 - [x] baichuan-7B
