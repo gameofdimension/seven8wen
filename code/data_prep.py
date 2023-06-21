@@ -151,9 +151,9 @@ def inference(tokenizer, model, formatter, instructions, num):
             )
             answer = tokenizer.decode(out[0])
             print("prompt->\n", input_text)
-            print("prediction->\n", answer)
-            print("golden->\n", feature["target"])
-            print("\n\n")
+            print("prediction->\n", answer[len(input_text):])
+            print("gold truth->\n", feature["target"])
+            print("\n")
 
 
 def make_data(model_name, base_dir):

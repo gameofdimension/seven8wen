@@ -5,11 +5,10 @@ import torch
 import torch.nn as nn
 import transformers
 from peft import get_peft_model, LoraConfig, TaskType
-from peft.utils import TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
 from transformers import AutoModel, TrainingArguments, AutoModelForCausalLM
 from transformers import Trainer
 
-from data_prep import load_dataset, inference_alpaca, inference_adgen
+from data_prep import load_dataset, inference_adgen
 
 
 class CastOutputToFloat(nn.Sequential):
@@ -138,6 +137,7 @@ def finetune(model_name, base_dir, v100: bool):
     model = get_base_model(model_name, v100=v100)
     model.eval()
     random.seed(42)
+    print("以下是微调前输出：")
     inference_adgen(tokenizer, model, eval_path, eval_num)
     model.train()
 
@@ -147,6 +147,7 @@ def finetune(model_name, base_dir, v100: bool):
     save_tunable_parameters(model, join(base_dir, short_name, "model-lora.pt"))
     model.eval()
     random.seed(42)
+    print("以下是微调后结果：")
     inference_adgen(tokenizer, model, eval_path, eval_num)
 
 
