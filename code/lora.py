@@ -14,7 +14,7 @@ class CastOutputToFloat(nn.Sequential):
 
 def get_base_model(model_name, v100=True):
     # need to set load_in_8bit=False in gpu v100
-    model = AutoModel.from_pretrained(model_name, load_in_8bit=v100, trust_remote_code=True, device_map='auto')
+    model = AutoModel.from_pretrained(model_name, load_in_8bit=not v100, trust_remote_code=True, device_map='auto')
     model.supports_gradient_checkpointing = True
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()
