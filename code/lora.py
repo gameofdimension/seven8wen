@@ -1,3 +1,5 @@
+import random
+
 import torch
 import torch.nn as nn
 import transformers
@@ -5,14 +7,14 @@ from peft import get_peft_model, LoraConfig, TaskType
 from transformers import AutoModel, TrainingArguments
 from transformers import Trainer
 
-from data_prep import load_dataset, inference_alpaca
+from data_prep import load_dataset, inference_alpaca, inference_adgen
 
 
 class CastOutputToFloat(nn.Sequential):
     def forward(self, x): return super().forward(x).to(torch.float32)
 
 
-def get_base_model(model_name, v100=True):
+def get_base_model(model_name, v100):
     # need to set load_in_8bit=False in gpu v100
     model = AutoModel.from_pretrained(model_name, load_in_8bit=not v100, trust_remote_code=True, device_map='auto')
     model.supports_gradient_checkpointing = True
@@ -103,21 +105,30 @@ def save_tunable_parameters(model, path):
     torch.save(saved_params, path)
 
 
-def main():
-    model_name, data_path, save_path = "THUDM/chatglm-6b", "data/alpaca_data.json", "data/alpaca"
+def finetune(v100: bool):
+    model_name = "THUDM/chatglm-6b"
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         model_name, trust_remote_code=True)
 
     # prepare_alpaca_data(model_name, tokenizer, data_path, save_path)
-    train_num = 1000
+    base_dir = '/content/drive/MyDrive/corpus/'
+    save_path = base_dir + "adgen/train/"
+    train_num = 1500
     train_data = load_dataset(save_path, train_num)
 
-    model = get_base_model(model_name)
+    model = get_base_model(model_name, v100=v100)
+    model.eval()
+    random.seed(42)
+    inference_adgen(tokenizer, model, base_dir + "adgen/AdvertiseGen/dev.json", 10)
+    model.train()
+
     model = build_peft_model(model)
     peft_train(tokenizer, model, train_data, max_steps=train_num)
-
-    # inference_alpaca(tokenizer, model, "data/alpaca_data.json", 5)
+    model.eval()
+    random.seed(42)
+    inference_adgen(tokenizer, model, base_dir + "adgen/AdvertiseGen/dev.json", 10)
+    model.train()
 
 
 if __name__ == '__main__':
-    main()
+    finetune(False)

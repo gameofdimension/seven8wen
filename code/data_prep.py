@@ -152,9 +152,10 @@ def inference(tokenizer, model, formatter, instructions, num):
             print("prompt->\n", input_text)
             print("prediction->\n", answer)
             print("golden->\n", feature["target"])
+            print("\n\n")
 
 
-def main():
+def make_data():
     model_name = "THUDM/chatglm-6b"
     for data_path, save_path, func in [
         ["data/AdvertiseGen/train.json", "data/adgen/train/", prepare_adgen_data],
@@ -172,4 +173,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    make_data()
