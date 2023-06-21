@@ -132,10 +132,13 @@ def finetune(model_name, base_dir, v100: bool):
     train_num = 1500
     train_data = load_dataset(save_path, train_num)
 
+    eval_num = 5
+    eval_path = join(base_dir, "adgen/AdvertiseGen/dev.json")
+
     model = get_base_model(model_name, v100=v100)
     model.eval()
     random.seed(42)
-    inference_adgen(tokenizer, model, join(base_dir, "adgen/AdvertiseGen/dev.json"), 10)
+    inference_adgen(tokenizer, model, eval_path, eval_num)
     model.train()
 
     target_modules = get_target_modules(model_name)
@@ -144,8 +147,7 @@ def finetune(model_name, base_dir, v100: bool):
     save_tunable_parameters(model, join(base_dir, short_name, "model-lora.pt"))
     model.eval()
     random.seed(42)
-    inference_adgen(tokenizer, model, join(base_dir, "adgen/AdvertiseGen/dev.json"), 10)
-    model.train()
+    inference_adgen(tokenizer, model, eval_path, eval_num)
 
 
 if __name__ == '__main__':
