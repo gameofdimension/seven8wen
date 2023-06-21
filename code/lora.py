@@ -1,4 +1,5 @@
 import random
+from os.path import join
 
 import torch
 import torch.nn as nn
@@ -105,30 +106,29 @@ def save_tunable_parameters(model, path):
     torch.save(saved_params, path)
 
 
-def finetune(v100: bool):
-    model_name = "THUDM/chatglm-6b"
+def finetune(model_name, base_dir, v100: bool):
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         model_name, trust_remote_code=True)
 
-    # prepare_alpaca_data(model_name, tokenizer, data_path, save_path)
-    base_dir = '/content/drive/MyDrive/corpus/'
-    save_path = base_dir + "adgen/train/"
+    short_name = model_name.split('/')[-1]
+    save_path = join(base_dir, short_name, "adgen/train/")
     train_num = 1500
     train_data = load_dataset(save_path, train_num)
 
     model = get_base_model(model_name, v100=v100)
     model.eval()
     random.seed(42)
-    inference_adgen(tokenizer, model, base_dir + "adgen/AdvertiseGen/dev.json", 10)
+    inference_adgen(tokenizer, model, join(base_dir, "adgen/AdvertiseGen/dev.json"), 10)
     model.train()
 
     model = build_peft_model(model)
     peft_train(tokenizer, model, train_data, max_steps=train_num)
+    save_tunable_parameters(model, join(base_dir, short_name, "model-lora.pt"))
     model.eval()
     random.seed(42)
-    inference_adgen(tokenizer, model, base_dir + "adgen/AdvertiseGen/dev.json", 10)
+    inference_adgen(tokenizer, model, join(base_dir, "adgen/AdvertiseGen/dev.json"), 10)
     model.train()
 
 
 if __name__ == '__main__':
-    finetune(False)
+    finetune(model_name="THUDM/chatglm-6b", base_dir='/content/drive/MyDrive/corpus/', v100=False)

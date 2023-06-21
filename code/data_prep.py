@@ -1,5 +1,6 @@
 import json
 import random
+from os.path import join
 
 import datasets
 import torch
@@ -108,7 +109,7 @@ def load_dataset(dataset_path, train_num):
 
 
 def inference_alpaca(tokenizer, model, data_path, num):
-    with open(data_path) as fp:
+    with open(data_path, encoding='utf-8') as fp:
         instructions = json.load(fp)
     instructions = list(instructions)
     inference(tokenizer, model, format_example, instructions, num)
@@ -116,7 +117,7 @@ def inference_alpaca(tokenizer, model, data_path, num):
 
 def inference_math(tokenizer, model, data_path, num):
     instructions = []
-    with open(data_path) as fp:
+    with open(data_path, encoding='utf-8') as fp:
         for example in fp:
             if example.strip() == '':
                 continue
@@ -127,7 +128,7 @@ def inference_math(tokenizer, model, data_path, num):
 
 def inference_adgen(tokenizer, model, data_path, num):
     instructions = []
-    with open(data_path) as fp:
+    with open(data_path, encoding='utf-8') as fp:
         for example in fp:
             if example.strip() == '':
                 continue
@@ -155,13 +156,21 @@ def inference(tokenizer, model, formatter, instructions, num):
             print("\n\n")
 
 
-def make_data():
-    model_name = "THUDM/chatglm-6b"
+def make_data(model_name, base_dir):
+    short_name = model_name.split('/')[-1]
     for data_path, save_path, func in [
-        ["data/AdvertiseGen/train.json", "data/adgen/train/", prepare_adgen_data],
-        ["data/AdvertiseGen/dev.json", "data/adgen/dev/", prepare_adgen_data],
-        ["data/school_math_0.25M.json", "data/math/", prepare_math_data],
-        ["data/alpaca_data.json", "data/alpaca/", prepare_alpaca_data],
+        [join(base_dir, "adgen/AdvertiseGen/train.json"),
+         join(base_dir, short_name, "adgen/train/"),
+         prepare_adgen_data],
+        [join(base_dir, "adgen/AdvertiseGen/dev.json"),
+         join(base_dir, short_name, "adgen/dev/"),
+         prepare_adgen_data],
+        [join(base_dir, "math/school_math_0.25M.json"),
+         join(base_dir, short_name, "math/feature/"),
+         prepare_math_data],
+        [join(base_dir, "alpaca/alpaca_data.json"),
+         join(base_dir, short_name, "alpaca/feature/"),
+         prepare_alpaca_data],
     ]:
         tokenizer = transformers.AutoTokenizer.from_pretrained(
             model_name, trust_remote_code=True)
@@ -173,4 +182,4 @@ def make_data():
 
 
 if __name__ == '__main__':
-    make_data()
+    make_data(model_name="THUDM/chatglm-6b", base_dir='/content/drive/MyDrive/corpus/')
