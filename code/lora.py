@@ -115,10 +115,9 @@ def save_tunable_parameters(model, path):
 
 def get_target_modules(model: str):
     # see site-packages/peft/utils/other.py
-    if 'chatglm' in model.lower():
-        target_modules = TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING['chatglm']
-    elif 'baichuan' in model.lower():
-        target_modules = TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING['llama']
+    if 'baichuan' in model.lower():
+        # https://github.com/baichuan-inc/baichuan-7B/issues/23
+        target_modules = ['W_pack']
     else:
         target_modules = None
     return target_modules
