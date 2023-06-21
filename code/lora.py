@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 import transformers
 from peft import get_peft_model, LoraConfig, TaskType
+from peft.utils import TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
 from transformers import AutoModel, TrainingArguments, AutoModelForCausalLM
 from transformers import Trainer
 
@@ -31,8 +32,16 @@ def get_base_model(model_name, v100):
     return model
 
 
-def build_peft_model(model):
+def build_peft_model(model: str):
+    # see site-packages/peft/utils/other.py
+    if 'chatglm' in model.lower():
+        target_modules = TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING['chatglm']
+    elif 'baichuan' in model.lower():
+        target_modules = TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING['llama']
+    else:
+        target_modules = None
     peft_config = LoraConfig(
+        target_modules=target_modules,
         task_type=TaskType.CAUSAL_LM,
         inference_mode=False,
         r=8,
