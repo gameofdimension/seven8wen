@@ -26,7 +26,7 @@ def get_base_model(model_name, v100):
     model.supports_gradient_checkpointing = True
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()
-    model.lm_head = CastOutputToFloat(model.lm_head)
+    # model.lm_head = CastOutputToFloat(model.lm_head)
     model.config.use_cache = False  # silence the warnings. Please re-enable for inference!
     return model
 
