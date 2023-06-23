@@ -117,6 +117,8 @@ def get_target_modules(model: str):
     if 'baichuan' in model.lower():
         # https://github.com/baichuan-inc/baichuan-7B/issues/23
         target_modules = ['W_pack']
+    elif 'moss-moon' in model.lower():
+        target_modules = ['qkv_proj']
     else:
         target_modules = None
     return target_modules
