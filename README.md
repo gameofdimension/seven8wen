@@ -6,6 +6,7 @@
 
 - [x] ChatGLM-6B
 - [x] baichuan-7B
+- [x] moss-moon-003-sft T4 和 V100 都跑不动了，可能需要 A100
 
 ### Demo
 
