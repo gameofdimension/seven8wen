@@ -4,9 +4,9 @@
 
 ### 中文 LLM (大语言模型) LoRA 微调。colab 免费 GPU 可运行
 
-- [x] ChatGLM-6B
-- [x] baichuan-7B
-- [x] moss-moon-003-sft T4 和 V100 都跑不动了，可能需要 A100
+- [x] [THUDM/chatglm-6b](https://huggingface.co/THUDM/chatglm-6b)
+- [x] [baichuan-inc/baichuan-7B](https://huggingface.co/baichuan-inc/baichuan-7B)
+- [x] [fnlp/moss-moon-003-sft](https://huggingface.co/fnlp/moss-moon-003-sft) T4 和 V100 都跑不动了，可能需要 A100
 
 ### Demo
 
