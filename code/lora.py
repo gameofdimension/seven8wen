@@ -17,7 +17,7 @@ class CastOutputToFloat(nn.Sequential):
 
 def get_base_model(model_name, v100):
     # need to set load_in_8bit=False in gpu v100
-    if "baichuan-inc/baichuan-7B" == model_name:
+    if model_name in ["baichuan-inc/baichuan-7B", "fnlp/moss-moon-003-sft"]:
         model = AutoModelForCausalLM.from_pretrained(
             model_name, load_in_8bit=not v100, trust_remote_code=True, device_map='auto')
     else:
